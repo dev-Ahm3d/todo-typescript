@@ -1,12 +1,16 @@
-import express , {Application , Request , Response} from "express" 
 import 'dotenv/config'
+import express , {Application , Request , Response} from "express" 
+import http from "http"
 import morgan from "morgan"
 import helmet from "helmet"
 import { rateLimit } from "express-rate-limit"
 import { MESSAGES } from "./utils/enums"
 import { max_requests_limit, rate_limit_minutes } from "./utils/constants"
+import httpStatus from "http-status"
+import globalError from "./middlewares/error.middleware"
 
 const app:Application = express() 
+const server = http.createServer(app)
 
 // middleware to parse incomig requests body 
 app.use(express.json()) 
@@ -37,8 +41,31 @@ app.route("/").get((req:Request,res:Response)=>{
     }) 
 })
 
-app.listen(process.env.PORT || 3000 ,()=>{
+
+// global error handling middleware by express  
+app.use(globalError)
+
+
+// not found route 
+app.all('*',(_req:Request,res:Response,_next)=>{
+    return res.status(404).json({
+        stausCode:404 ,
+        message : httpStatus["404_MESSAGE"]
+    })
+})
+
+server.listen(process.env.PORT || 3000 ,()=>{
     console.log("server is running...")
+})
+
+// handling rejections out of express like db connection
+process.on('unhandledRejection' , err =>{
+    //console.log("here")
+    //console.error(`UnhandledRejection Errors : ${err.name} | ${err.message}`)
+    server.close(()=>{
+        console.error('Shutting down ..')
+        process.exit(1)
+    })
 })
 
 export default app
