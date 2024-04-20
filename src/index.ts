@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import express , {Application , Request , Response} from "express" 
 import http from "http"
 import morgan from "morgan"
@@ -8,9 +7,15 @@ import { MESSAGES } from "./utils/enums"
 import { max_requests_limit, rate_limit_minutes } from "./utils/constants"
 import httpStatus from "http-status"
 import globalError from "./middlewares/error.middleware"
+import configs from "./utils/config"
+import { PrismaClient } from "@prisma/client"
+import softDelete from "./utils/prisma-extensions/soft-delete"
 
 const app:Application = express() 
 const server = http.createServer(app)
+
+// connecting to database
+export const prisma = new PrismaClient().$extends(softDelete)
 
 // middleware to parse incomig requests body 
 app.use(express.json()) 
@@ -54,7 +59,7 @@ app.all('*',(_req:Request,res:Response,_next)=>{
     })
 })
 
-server.listen(process.env.PORT || 3000 ,()=>{
+server.listen(configs.PORT , ()=>{
     console.log("server is running...")
 })
 

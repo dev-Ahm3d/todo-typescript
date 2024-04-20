@@ -1,0 +1,48 @@
+enum UserRole {
+  ADMIN 
+  CLIENT 
+}
+
+generator client {
+  provider = "prisma-client-js" 
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+model User {
+  id                  Int         @id @default(autoincrement())
+  name                String      @db.VarChar(100) 
+  email               String      @unique @db.VarChar(100)
+  password            String      @db.VarChar(100) 
+  role                UserRole    @default(CLIENT)
+  createdAt 					DateTime 	  @default(now())
+	updatedAt 					DateTime 	  @updatedAt
+  deletedAt           DateTime?
+
+  // every user has many tasks .. 1 to m 
+  tasks               Task[]
+  
+  @@map("users")
+}
+
+model Task {
+  id                  Int       @id @default(autoincrement())
+  title               String    @db.VarChar(500) 
+  description         String    @db.VarChar(2000)
+  date                DateTime
+  completed           Boolean   @default(false)
+  createdAt 					DateTime 	@default(now())
+	updatedAt 					DateTime 	@updatedAt
+  deletedAt           DateTime?
+
+  // every task belongs to one user   .. m to 1
+  user 						    User? 		@relation(fields: [user_id], references: [id] , onDelete: SetNull , onUpdate: Cascade)
+	user_id 					  Int? 	   
+
+  @@unique([title,user_id])
+  @@map("tasks")
+}
