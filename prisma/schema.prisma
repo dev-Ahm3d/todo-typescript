@@ -41,7 +41,7 @@ model Task {
 
   // every task belongs to one user   .. m to 1
   user 						    User? 		@relation(fields: [user_id], references: [id] , onDelete: SetNull , onUpdate: Cascade)
-	user_id 					  Int? 	   
+	user_id 					  Int?	   
 
   @@unique([title,user_id])
   @@map("tasks")

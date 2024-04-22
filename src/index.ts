@@ -2,20 +2,20 @@ import express , {Application , Request , Response} from "express"
 import http from "http"
 import morgan from "morgan"
 import helmet from "helmet"
+import cors from "cors"
 import { rateLimit } from "express-rate-limit"
 import { MESSAGES } from "./utils/enums"
 import { max_requests_limit, rate_limit_minutes } from "./utils/constants"
-import httpStatus from "http-status"
 import globalError from "./middlewares/error.middleware"
 import configs from "./utils/config"
-import { PrismaClient } from "@prisma/client"
-import softDelete from "./utils/prisma-extensions/soft-delete"
 
 const app:Application = express() 
 const server = http.createServer(app)
 
-// connecting to database
-export const prisma = new PrismaClient().$extends(softDelete)
+app.use(cors({
+    origin: configs.ORIGIN , 
+    credentials: true
+}))
 
 // middleware to parse incomig requests body 
 app.use(express.json()) 
@@ -39,11 +39,26 @@ const limiter = rateLimit({
 // Apply the rate limiting middleware to all requests.
 app.use(limiter)
 
+import twilio from "twilio" 
+import { StatusCodes } from "http-status-codes"
 
-app.route("/").get((req:Request,res:Response)=>{
-    res.json({
-        message:"hello world"
-    }) 
+app.route("/").get(async (req:Request,res:Response)=>{
+    // const accountSid = 'AC37f0b2a67f3ad6ce98a8d6b7aac92170';
+    // const authToken = '7424a3f202d373f9877a5c4b055a04fc';
+    // const client = twilio(accountSid, authToken);
+
+    // client.messages
+    //     .create({
+    //         body: '',
+    //         from: 'whatsapp:+14155238886',
+    //         to: 'whatsapp:+201067115590',
+    //         mediaUrl:["https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg" ,
+    //             "https://fis.carmarthenshire.gov.wales/wp-content/uploads/2018/12/easy-pleasy-cookbook.pdf"
+    //         ] 
+    //     })
+    //     .then(resp => {
+    //         res.status(StatusCodes.OK).json(resp)
+    //     })
 })
 
 
@@ -55,7 +70,7 @@ app.use(globalError)
 app.all('*',(_req:Request,res:Response,_next)=>{
     return res.status(404).json({
         stausCode:404 ,
-        message : httpStatus["404_MESSAGE"]
+        message : StatusCodes.NOT_FOUND
     })
 })
 
@@ -68,6 +83,7 @@ process.on('unhandledRejection' , err =>{
     //console.log("here")
     //console.error(`UnhandledRejection Errors : ${err.name} | ${err.message}`)
     server.close(()=>{
+        console.log(err)
         console.error('Shutting down ..')
         process.exit(1)
     })

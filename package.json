@@ -5,8 +5,7 @@
   "scripts": {
     "test": "npm run build && jasmine",
     "build": "tsc",
-    "start:dev": "SET NODE_ENV=dev && nodemon src/index.ts",
-    "start:prod": "npm run build && SET NODE_ENV=prod && node dist/index.js"
+    "start:dev": "SET NODE_ENV=dev && nodemon src/index.ts"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -19,21 +18,27 @@
     "@prisma/client": "^5.12.1",
     "@types/bcrypt": "^5.0.2",
     "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
     "@types/jasmine": "^5.1.4",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/supertest": "^6.0.2",
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-async-handler": "^1.2.0",
     "express-rate-limit": "^7.2.0",
     "helmet": "^7.1.0",
     "http-errors-enhanced": "^2.0.8",
-    "http-status": "^1.7.4",
+    "http-status-codes": "^2.3.0",
     "jasmine": "^5.1.0",
     "jasmine-spec-reporter": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
     "supertest": "^6.3.4",
+    "twilio": "^5.0.4",
     "zod": "^3.22.5"
   },
   "devDependencies": {
