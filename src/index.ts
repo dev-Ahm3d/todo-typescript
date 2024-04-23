@@ -43,22 +43,22 @@ import twilio from "twilio"
 import { StatusCodes } from "http-status-codes"
 
 app.route("/").get(async (req:Request,res:Response)=>{
-    // const accountSid = 'AC37f0b2a67f3ad6ce98a8d6b7aac92170';
-    // const authToken = '7424a3f202d373f9877a5c4b055a04fc';
-    // const client = twilio(accountSid, authToken);
+    const accountSid = 'AC37f0b2a67f3ad6ce98a8d6b7aac92170';
+    const authToken = '7424a3f202d373f9877a5c4b055a04fc';
+    const client = twilio(accountSid, authToken);
 
-    // client.messages
-    //     .create({
-    //         body: '',
-    //         from: 'whatsapp:+14155238886',
-    //         to: 'whatsapp:+201067115590',
-    //         mediaUrl:["https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg" ,
-    //             "https://fis.carmarthenshire.gov.wales/wp-content/uploads/2018/12/easy-pleasy-cookbook.pdf"
-    //         ] 
-    //     })
-    //     .then(resp => {
-    //         res.status(StatusCodes.OK).json(resp)
-    //     })
+    client.messages
+        .create({
+            body: 'test',
+            from: 'whatsapp:+14155238886',
+            to: 'whatsapp:+201067115590',
+            mediaUrl:["https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg" ,
+                //"https://fis.carmarthenshire.gov.wales/wp-content/uploads/2018/12/easy-pleasy-cookbook.pdf"
+            ] 
+        })
+        .then(resp => {
+            res.status(StatusCodes.OK).json(resp)
+        })
 })
 
 

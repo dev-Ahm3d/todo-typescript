@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import prisma from './db';
 
 type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never;
 type Entity = A<keyof typeof Prisma>;
@@ -20,4 +21,19 @@ export function prismaExclude<T extends Entity, K extends Keys<T>>(
         }
     }
     return result;
+}
+
+
+export const checkThatAllFieldsAreAllowed = (allowedFields: string[],obj:any):boolean =>{
+    return Object.keys(obj).every(key => allowedFields.includes(key))    
+}
+
+export const checkThatCurrentUserIsTheTaskOwner = async(userId:number , taskId:number) : Promise<boolean> =>{
+    const task = await prisma.task.findUnique({
+        where:{
+            id: taskId , 
+            user_id: userId
+        }
+    })
+    return !!task
 }

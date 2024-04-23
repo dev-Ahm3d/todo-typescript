@@ -7,12 +7,7 @@ type CreateUserType = {
     role?: UserRole
 }
 
-type UpdateUserType = {
-    name?:  string
-    email?: string
-    password?: string
-    role?: UserRole
-}
+type UpdateUserType = Partial<Omit<CreateUserType,"password" | "role">>
 
 type UpdatePasswordType = {
     new_password: string ,
@@ -26,9 +21,8 @@ type CreateTaskType = {
     description: string 
 }
 
-type ResponseType<T> = {
-    data?: T 
-    message: string
-}
 
-export {ResponseType , CreateUserType , UpdateUserType  , UpdatePasswordType, CreateTaskType}
+type UpdateTaskType = Partial<Omit<CreateTaskType,"user_id">>
+
+
+export {CreateUserType , UpdateUserType  , UpdatePasswordType, CreateTaskType , UpdateTaskType}

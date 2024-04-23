@@ -1,5 +1,15 @@
 import { UserRole } from "@prisma/client";
-import { Request } from "express";
+import { Request, Response } from "express";
+
+declare module "express-serve-static-core" {
+    interface Request {
+        user: {
+            id:number ,
+            role:UserRole
+        }
+    }
+}
+
 
 interface IError {
     message: string 
@@ -9,10 +19,19 @@ interface IError {
 }
 
 interface IRequest<T> extends Request {
-    body: T ,
-    user?: {
-        id: number ,
-        role: UserRole
-    } 
+    body: T 
 }
-export {IError , IRequest}
+
+interface Json {
+    success?: boolean ,
+    message?:string ,
+    data?: any
+}
+
+type Send<T = Response> = (body?: Json) => T;
+
+interface CustomResponse extends Response {
+    json: Send<this>
+}
+
+export {IError , IRequest , CustomResponse }
