@@ -1,29 +1,29 @@
 import { z } from 'zod';
 import prisma from '../utils/db';
 
-const passRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/ )
+const passRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
 
 const userRegistrationSchema = z.object({
     name: z
     .string({
-        required_error:"name is required" ,
-        invalid_type_error:"name must be a string"
+        required_error:"required" ,
+        invalid_type_error:"must be a string"
     })
-    .min(3,"name must be at least 3 characters")
-    .max(20,"name must be at most 20 characters"),
+    .min(3,"must be at least 3 characters")
+    .max(20,"must be at most 20 characters"),
 
     email: z
     .string({
-        required_error:"email is required" ,
-        invalid_type_error:"email must be a string"
+        required_error:"required" ,
+        invalid_type_error:"must be a string"
     })
-    .min(3,"email must be at least 3 characters")
-    .max(100,"email must be at most 20 characters")
-    .email("email field must be a valid email")
+    .min(3,"must be at least 3 characters")
+    .max(100,"must be at most 20 characters")
+    .email("field must be a valid email")
     .refine(async email =>{
         const user = await prisma.user.findUnique({where:{email}})
         return (!user) 
-    } , "email not exists") ,
+    } , "already exists") ,
 
     password: z
     .string({
@@ -32,80 +32,76 @@ const userRegistrationSchema = z.object({
     })
     .min(6, "password must be at least 6 characters")
     .max(20, "password must be at most 20 characters")
-    .regex(
-        passRegex ,
-        "password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-    )
+    // .regex(
+    //     passRegex ,
+    //     "must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    // )
 })
 
 const userLoginSchema = z.object({
     email: z
     .string({
-        required_error:"email is required" ,
-        invalid_type_error:"email must be a string"
+        required_error:"required" ,
+        invalid_type_error:"must be a string"
     })
-    .min(3,"email must be at least 3 characters")
-    .max(100,"email must be at most 20 characters")
-    .email("email field must be a valid email")
-    .refine(async email =>{
-        const user = await prisma.user.findUnique({where:{email}})
-        return (!!user) 
-    } , "email already exists") ,
+    .min(3,"must be at least 3 characters")
+    .max(100,"must be at most 20 characters")
+    .email("must be a valid email") ,
 
     password: z
     .string({
-        required_error:"password is required" ,
-        invalid_type_error:"password must be a string"
+        required_error:"required" ,
+        invalid_type_error:"must be a string"
     })
-    .min(6, "password must be at least 6 characters")
-    .max(20, "password must be at most 20 characters")
+    .min(6, "must be at least 6 characters")
+    .max(20, "must be at most 20 characters")
 })
 
 const userUpdateSchema = z.object({
     name: z
     .string({
-        //required_error:"name is required" ,
-        invalid_type_error:"name must be a string"
+        required_error:"required" ,
+        invalid_type_error:"must be a string"
     })
-    .min(3,"name must be at least 3 characters")
-    .max(20,"name must be at most 20 characters")
+    .min(3,"must be at least 3 characters")
+    .max(20,"must be at most 20 characters")
     .optional() ,
 
     email: z
     .string({
-        required_error:"email is required" ,
-        invalid_type_error:"email must be a string"
+        required_error:"is required" ,
+        invalid_type_error:"must be a string"
     })
-    .min(3,"email must be at least 3 characters")
-    .max(100,"email must be at most 20 characters")
-    .email("email field must be a valid email")
+    .min(3, "must be at least 3 characters")
+    .max(100,"must be at most 20 characters")
+    .email("field must be a valid email")
     .refine(async email =>{
         const user = await prisma.user.findUnique({where:{email}})
         return (!user) 
-    } , "email already exists") 
+    } , "already exists") 
     .optional()
 })
 
 const changeUserPasswordSchema = z.object({
     current_password: z
     .string({
-        required_error:"password is required" ,
-        invalid_type_error:"password must be a string"
+        required_error:"required" ,
+        invalid_type_error:"must be a string"
     })
-    .min(6, "current password must be at least 6 characters")
-    .max(20, "current password must be at most 20 characters") ,
+    .min(6, "must be at least 6 characters")
+    .max(20, "must be at most 20 characters") ,
 
     new_password: z
     .string({
-        required_error:"new password is required" ,
-        invalid_type_error:"new password must be a string"
+        required_error:"required" ,
+        invalid_type_error:"must be a string"
     })
-    .min(6, "new password must be at least 6 characters")
-    .max(20, "new password must be at most 20 characters")
-    .regex(
-        passRegex,
-        "new password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-    )
+    .min(6, "must be at least 6 characters")
+    .max(20, "must be at most 20 characters")
+    // .regex(
+    //     passRegex,
+    //     "new password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    // )
 })
 
 export {userRegistrationSchema , userLoginSchema , userUpdateSchema , changeUserPasswordSchema}

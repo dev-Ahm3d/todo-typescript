@@ -3,11 +3,12 @@ import { z, ZodError } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 
 export function validateData(schema: z.ZodObject<any, any>) {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            schema.parse(req.body);
+            await schema.parseAsync(req.body);
             next();
         } catch (error) {
+            //console.log(error)
             if (error instanceof ZodError) {
                 const errorMessages = error.errors.map((issue: any) => ({
                     message: `${issue.path.join('.')} is ${issue.message}`,

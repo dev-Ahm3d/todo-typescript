@@ -24,8 +24,15 @@ export function prismaExclude<T extends Entity, K extends Keys<T>>(
 }
 
 
-export const checkThatAllFieldsAreAllowed = (allowedFields: string[],obj:any):boolean =>{
-    return Object.keys(obj).every(key => allowedFields.includes(key))    
+export const removeNotAllowedFields = (allowedFields: string[],obj:any) =>{
+    const filteredObj:any = {}
+    const keys = Object.keys(obj)
+    keys.forEach(key => {
+        if(allowedFields.includes(key)){
+            filteredObj[key] = obj[key] 
+        }
+    })
+    return filteredObj
 }
 
 export const checkThatCurrentUserIsTheTaskOwner = async(userId:number , taskId:number) : Promise<boolean> =>{
@@ -36,4 +43,14 @@ export const checkThatCurrentUserIsTheTaskOwner = async(userId:number , taskId:n
         }
     })
     return !!task
+}
+
+
+export class CustomError extends Error{
+    private readonly statusCode:number
+    constructor(statusCode:number , message:string){
+        super(message)
+        this.message = message
+        this.statusCode = statusCode
+    }
 }
