@@ -11,5 +11,6 @@ export enum MESSAGES {
     CURRENT_PASSWORD_IS_INCORRECT = "current password is incorrect" ,
     UNAUTHORIZED = "you are unauthorized",
     NOT_ALlOWED = "you are not allowed" ,
-    NOT_FOUND = "not found"
+    NOT_FOUND = "not found" ,
+    RESTORED_SUCCESSFULLY = "restored successfully"
 }   

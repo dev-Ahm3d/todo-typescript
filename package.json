@@ -2,10 +2,13 @@
   "name": "todo-typescript",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "npm run build && jasmine",
+  "scripts": {    
     "build": "tsc",
-    "start:dev": "SET NODE_ENV=dev && nodemon src/index.ts"
+    "test": "npm run build && jasmine",
+    "start:dev": "SET NODE_ENV=development && dotenv -e .env.development npx prisma migrate dev && npm run seed && nodemon src/index.ts",
+    "start:prod": "npm run build && SET NODE_ENV=production && dotenv -e .env.production npx prisma migrate deploy && nodemon ./dist/index.js" ,
+    "start:test": "SET NODE_ENV=testing && nodemon src/index.ts" ,
+    "seed" : "dotenv -e .env.development npx prisma db seed"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

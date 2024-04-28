@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler'
-import bcrypt, { compare, hash } from "bcrypt" 
+import { compare, hash } from "bcrypt" 
 import { NextFunction, Request, Response } from 'express'
 import prisma from '../utils/db'
 import { MESSAGES } from '../utils/enums'
@@ -16,7 +16,7 @@ const register = asyncHandler(async (req:Request<{},{},CreateUserType> , res:Cus
     const newUser = await prisma.user.create({
         data :{
             ...userData , 
-            password: await bcrypt.hash(`${userData.password}${configs.SECRET_PEPPER}`, 10) 
+            password: await hash(userData.password + configs.SECRET_PEPPER, 10) 
         },
         select: prismaExclude("User",["password","role","deletedAt","createdAt","updatedAt"])
     })
@@ -30,7 +30,7 @@ const register = asyncHandler(async (req:Request<{},{},CreateUserType> , res:Cus
 const login = asyncHandler(async (req:Request<{},{},User> , res:Response , next:NextFunction) : Promise<any> =>{
     const {email , password} = req.body
     const user = await prisma.user.findUnique({where:{email}})
-    if(user && (await compare(`${password}${configs.SECRET_PEPPER}` , user.password))){
+    if(user && (await compare(password + configs.SECRET_PEPPER, user.password))){
         return res.status(StatusCodes.OK).json({
             success: true ,
             message : MESSAGES.SUCCESSFULL_LOGIN ,
